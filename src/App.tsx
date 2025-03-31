@@ -18,7 +18,7 @@ import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
 import { CartProvider } from "./contexts/CartContext";
-import { AuthProvider } from "./contexts/AuthContext";
+import { AuthProvider } from "./contexts/auth";
 
 const queryClient = new QueryClient();
 
