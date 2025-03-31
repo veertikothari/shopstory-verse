@@ -20,7 +20,7 @@ import {
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const Navbar = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, profile, isAdmin } = useAuth();
   const { totalItems } = useCart();
   const isMobile = useIsMobile();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -93,9 +93,9 @@ const Navbar = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem className="font-medium">
-                    {user.name}
+                    {profile?.first_name ? `${profile.first_name} ${profile.last_name || ''}` : user.email}
                   </DropdownMenuItem>
-                  {user.isAdmin && (
+                  {isAdmin && (
                     <DropdownMenuItem asChild>
                       <Link to="/admin">Admin Dashboard</Link>
                     </DropdownMenuItem>

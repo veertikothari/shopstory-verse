@@ -17,12 +17,13 @@ interface UserProfile {
   country?: string;
 }
 
-interface AuthContextType {
+export interface AuthContextType {
   user: User | null;
   profile: UserProfile | null;
   session: Session | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isAdmin: boolean;
   login: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, data?: { first_name?: string, last_name?: string }) => Promise<void>;
   logout: () => Promise<void>;
@@ -48,6 +49,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -63,6 +65,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           }, 0);
         } else {
           setProfile(null);
+          setIsAdmin(false);
         }
       }
     );
@@ -109,6 +112,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           postal_code: data.postal_code || '',
           country: data.country || '',
         });
+        
+        // Set admin status based on email domain for now
+        // In a real app, you'd check a roles table or a proper isAdmin field
+        setIsAdmin(user?.email?.endsWith('@admin.com') || false);
       }
     } catch (error) {
       console.error('Error fetching profile:', error);
@@ -124,9 +131,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       });
 
       if (error) {
-        toast.error('Login failed', {
-          description: error.message
-        });
+        // Handle the "Email not confirmed" error specifically
+        if (error.message.includes('Email not confirmed')) {
+          // Send a new confirmation email
+          await supabase.auth.resend({
+            type: 'signup',
+            email: email,
+          });
+          
+          toast.error('Please confirm your email', {
+            description: 'A confirmation email has been sent. Please check your inbox.'
+          });
+        } else {
+          toast.error('Login failed', {
+            description: error.message
+          });
+        }
         throw error;
       }
 
@@ -160,7 +180,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         throw error;
       }
 
-      toast.success('Registration successful');
+      toast.success('Registration successful', {
+        description: 'Please check your email for a confirmation link.'
+      });
     } catch (error: any) {
       console.error('Registration error:', error);
       throw error;
@@ -231,6 +253,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       session,
       isAuthenticated: !!user,
       isLoading,
+      isAdmin,
       login,
       signUp,
       logout,
