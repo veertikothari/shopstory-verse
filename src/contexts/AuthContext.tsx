@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Session, User } from '@supabase/supabase-js';
@@ -113,9 +112,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           country: data.country || '',
         });
         
-        // Set admin status based on email domain for now
-        // In a real app, you'd check a roles table or a proper isAdmin field
-        setIsAdmin(user?.email?.endsWith('@admin.com') || false);
+        // Set admin status for specific email
+        setIsAdmin(user?.email === 'shahhenil2004@gmail.com');
       }
     } catch (error) {
       console.error('Error fetching profile:', error);

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -23,14 +22,14 @@ import AdminSettings from './admin/AdminSettings';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const Admin = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, isAdmin } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
   // Protect the admin route
-  if (!user?.isAdmin) {
+  if (!isAdmin) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
         <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
@@ -75,7 +74,6 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-gray-50">
-      {/* Mobile header */}
       {isMobile && (
         <div className="bg-white p-4 shadow-sm flex items-center justify-between">
           <div className="flex items-center">
@@ -93,7 +91,6 @@ const Admin = () => {
         </div>
       )}
 
-      {/* Sidebar */}
       <div
         className={`${
           isMobile
@@ -159,12 +156,12 @@ const Admin = () => {
               <div className="flex items-center mb-4">
                 <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
                   <span className="text-gray-700 font-medium">
-                    {user.name.charAt(0)}
+                    {user?.email?.charAt(0).toUpperCase() || 'U'}
                   </span>
                 </div>
                 <div className="ml-3">
-                  <p className="font-medium text-sm">{user.name}</p>
-                  <p className="text-gray-500 text-xs">{user.email}</p>
+                  <p className="font-medium text-sm">{profile?.first_name || user?.email}</p>
+                  <p className="text-gray-500 text-xs">{user?.email}</p>
                 </div>
               </div>
 
@@ -181,7 +178,6 @@ const Admin = () => {
         </div>
       </div>
 
-      {/* Main content */}
       <div className="flex-1 p-6">
         {!isMobile && (
           <div className="flex justify-between mb-6">
