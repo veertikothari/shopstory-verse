@@ -3,6 +3,7 @@ import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Session, User } from '@supabase/supabase-js';
 import { AuthContextType, UserProfile } from './types';
+import { toast } from 'sonner';
 import { loginUser, signUpUser, logoutUser, updateUserProfile, fetchUserProfile } from './authOperations';
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
