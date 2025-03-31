@@ -3,7 +3,10 @@ import { useState } from 'react';
 import { customerInsights, recentOrders } from '@/services/mockData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { BarChart, LineChart, PieChart } from 'recharts';
+import { 
+  BarChart, LineChart, PieChart, Line, Bar, Pie, Cell,
+  XAxis, YAxis, CartesianGrid, Tooltip 
+} from 'recharts';
 import {
   Users,
   DollarSign,
